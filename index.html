@@ -1,791 +1,608 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drom Filter - Поиск автомобилей</title>
-  
-  <!-- Telegram Web App API -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
-  <!-- React 18 -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Babel для JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
-      min-height: 100vh;
-    }
-    
-    /* Кастомные стили для select */
-    select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 0.5rem center;
-      background-repeat: no-repeat;
-      background-size: 1.5em 1.5em;
-      padding-right: 2.5rem;
-    }
-    
-    /* Градиенты */
-    .gradient-blue-indigo {
-      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-    }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
-    }
-    
-    .gradient-green {
-      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-    }
-    
-    /* Анимации */
-    .transition-all {
-      transition: all 0.2s ease-in-out;
-    }
-    
-    /* Скрытие скроллбара для webkit */
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    
-    /* Загрузочный экран */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #e5e7eb;
-      border-top: 4px solid #2563eb;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Drom Filter - Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        #root {
+            min-height: 100vh;
+        }
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+    </style>
 </head>
 <body>
-  <!-- Загрузочный экран -->
-  <div id="loading" class="loading-screen">
-    <div class="loading-spinner"></div>
-    <p class="mt-4 text-gray-600">Загрузка приложения...</p>
-  </div>
-  
-  <div id="root"></div>
-  
-  <script type="text/babel">
-    // Проверяем загрузку всех библиотек
-    function checkLibraries() {
-      const libraries = {
-        React: typeof React !== 'undefined',
-        ReactDOM: typeof ReactDOM !== 'undefined',
-        lucide: typeof lucide !== 'undefined',
-        tailwind: typeof tailwind !== 'undefined'
-      };
-      
-      console.log('Библиотеки загружены:', libraries);
-      
-      if (!libraries.React || !libraries.ReactDOM) {
-        throw new Error('React не загружен');
-      }
-      
-      return true;
-    }
+    <div id="root"></div>
     
-    // Показываем ошибку
-    function showError(message) {
-      document.getElementById('loading').innerHTML = `
-        <div class="text-center">
-          <div class="text-red-600 text-xl mb-4">❌ Ошибка загрузки</div>
-          <p class="text-gray-600 mb-4">${message}</p>
-          <button onclick="location.reload()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">
-            Перезагрузить
-          </button>
-        </div>
-      `;
-    }
-    
-    try {
-      // Проверяем библиотеки
-      checkLibraries();
-      
-      const { useState, useEffect } = React;
-      const { Car, Calendar, DollarSign, MapPin, Settings, CheckCircle, Search } = lucide;
-      
-      // База данных автомобилей
-      const carDatabase = {
-        'Toyota': ['Camry', 'Corolla', 'RAV4', 'Land Cruiser', 'Highlander', 
-                   'Crown', 'Mark II', 'Chaser', 'Cresta', 'Premio', 'Allion', 
-                   'Vitz', 'Prius', 'Alphard', 'Vellfire', 'Harrier'],
-        'Nissan': ['X-Trail', 'Qashqai', 'Teana', 'Patrol', 'Murano', 'Juke',
-                   'Note', 'Tiida', 'Almera', 'Sylphy', 'Bluebird', 'Sunny',
-                   'AD', 'Wingroad', 'Serena', 'Elgrand'],
-        'Honda': ['CR-V', 'Civic', 'Accord', 'Fit', 'HR-V', 'Pilot',
-                  'Odyssey', 'Stream', 'Stepwgn', 'Freed', 'Vezel', 'Shuttle'],
-        'Mazda': ['CX-5', 'Mazda3', 'Mazda6', 'CX-3', 'CX-7', 'CX-9',
-                  'Demio', 'Axela', 'Atenza', 'Premacy', 'MPV', 'Biante'],
-        'Mitsubishi': ['Outlander', 'ASX', 'Pajero', 'L200', 'Lancer',
-                       'Eclipse Cross', 'Delica', 'RVR', 'Galant', 'Montero Sport'],
-        'Subaru': ['Forester', 'Outback', 'XV', 'Impreza', 'Legacy',
-                   'Levorg', 'Exiga', 'Tribeca'],
-        'BMW': ['X5', 'X3', 'X1', '3 серии', '5 серии', '7 серии',
-                'X6', 'X4', 'X7', '1 серии', '2 серии', '4 серии'],
-        'Mercedes-Benz': ['E-класс', 'C-класс', 'S-класс', 'GLE', 'GLC',
-                          'GLA', 'GLK', 'ML', 'GL', 'A-класс', 'B-класс', 'CLS'],
-        'Audi': ['Q5', 'Q7', 'A4', 'A6', 'Q3', 'A3', 'Q8', 'A5', 'A7', 'A8', 'Q2'],
-        'Volkswagen': ['Tiguan', 'Touareg', 'Passat', 'Polo', 'Jetta',
-                       'Golf', 'Touran', 'Caddy', 'Multivan'],
-        'Hyundai': ['Solaris', 'Creta', 'Tucson', 'Santa Fe', 'Elantra',
-                    'Sonata', 'i30', 'i40', 'ix35', 'Grand Starex'],
-        'Kia': ['Rio', 'Sportage', 'Sorento', 'Ceed', 'Optima', 'Soul',
-                'Picanto', 'Seltos', 'Mohave', 'Carnival'],
-        'Chevrolet': ['Cruze', 'Aveo', 'Lacetti', 'Captiva', 'Tahoe',
-                      'Suburban', 'Camaro', 'Corvette', 'Silverado'],
-        'Ford': ['Focus', 'Mondeo', 'Kuga', 'Explorer', 'EcoSport',
-                 'Fiesta', 'Fusion', 'Escape', 'Edge', 'Expedition'],
-        'Lexus': ['RX', 'NX', 'LX', 'IS', 'ES', 'GX', 'LS', 'CT', 'GS', 'UX']
-      };
-      
-      // Данные для фильтров
-      const brands = Object.keys(carDatabase).sort();
-      const regions = [
-        'Все регионы', 'Москва', 'Санкт-Петербург', 'Владивосток', 'Новосибирск',
-        'Екатеринбург', 'Казань', 'Нижний Новгород', 'Челябинск', 'Самара',
-        'Омск', 'Ростов-на-Дону', 'Уфа', 'Красноярск', 'Пермь', 'Воронеж', 'Волгоград'
-      ];
-      
-      const bodyTypes = [
-        'Седан', 'Хэтчбек', 'Универсал', 'Внедорожник', 'Кроссовер',
-        'Купе', 'Минивэн', 'Пикап', 'Лифтбек', 'Фургон'
-      ];
-      
-      const transmissions = ['Механика', 'Автомат', 'Робот', 'Вариатор'];
-      const driveTypes = ['Передний', 'Задний', 'Полный'];
-      const fuelTypes = ['Бензин', 'Дизель', 'Гибрид', 'Электро', 'Газ', 'Газ-бензин'];
-      const colors = [
-        'Белый', 'Черный', 'Серый', 'Серебристый', 'Красный', 'Синий',
-        'Зеленый', 'Коричневый', 'Желтый', 'Оранжевый', 'Бежевый', 'Золотистый'
-      ];
-      
-      const conditions = ['Любое', 'Новый', 'С пробегом'];
-      const sellerTypes = ['Все', 'Частное лицо', 'Автосалон'];
-      const wheelPositions = ['Любой', 'Левый', 'Правый'];
-      const owners = ['Не важно', '1', '2', '3 и более'];
-      
-      // Генерация годов
-      const years = Array.from({length: 36}, (_, i) => 2025 - i);
-      
-      // Генерация объемов двигателя
-      const engineVolumes = [0.8, 1.0, 1.2, 1.4, 1.5, 1.6, 1.8, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0];
-      
-      // Компонент множественного выбора
-      const MultiSelectButton = ({ label, selected, onClick }) => (
-        <button
-          onClick={onClick}
-          className={`
-            px-4 py-2 rounded-lg text-sm font-medium 
-            transition-all duration-200
-            ${selected 
-              ? 'bg-blue-600 text-white shadow-md scale-105' 
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+    <script type="text/babel">
+        const { useState } = React;
+        const { Car, Fuel, Calendar, DollarSign, Settings, MapPin, Search, ChevronDown } = lucide;
+
+        function DromFilterApp() {
+          const [filters, setFilters] = useState({
+            brand: '',
+            model: '',
+            yearFrom: '',
+            yearTo: '',
+            priceFrom: '',
+            priceTo: '',
+            region: '',
+            bodyType: [],
+            engineVolFrom: '',
+            engineVolTo: '',
+            transmission: [],
+            driveType: [],
+            fuelType: [],
+            condition: '',
+            sellerType: '',
+            color: [],
+            mileageFrom: '',
+            mileageTo: '',
+            wheelPosition: '',
+            owners: '',
+            customs: ''
+          });
+
+          // Данные автомобилей
+          const carDatabase = {
+            'Toyota': ['Camry', 'Corolla', 'RAV4', 'Land Cruiser', 'Highlander', 'Crown', 'Mark II', 'Chaser', 'Cresta', 'Premio', 'Allion', 'Vitz', 'Prius', 'Alphard', 'Vellfire', 'Harrier'],
+            'Nissan': ['X-Trail', 'Qashqai', 'Teana', 'Patrol', 'Murano', 'Juke', 'Note', 'Tiida', 'Almera', 'Sylphy', 'Bluebird', 'Sunny', 'AD', 'Wingroad', 'Serena', 'Elgrand'],
+            'Honda': ['CR-V', 'Civic', 'Accord', 'Fit', 'HR-V', 'Pilot', 'Odyssey', 'Stream', 'Stepwgn', 'Freed', 'Vezel', 'Shuttle'],
+            'Mazda': ['CX-5', 'Mazda3', 'Mazda6', 'CX-3', 'CX-7', 'CX-9', 'Demio', 'Axela', 'Atenza', 'Premacy', 'MPV', 'Biante'],
+            'Mitsubishi': ['Outlander', 'ASX', 'Pajero', 'L200', 'Lancer', 'Eclipse Cross', 'Delica', 'RVR', 'Galant', 'Montero Sport'],
+            'Subaru': ['Forester', 'Outback', 'XV', 'Impreza', 'Legacy', 'Levorg', 'Exiga', 'Tribeca'],
+            'BMW': ['X5', 'X3', 'X1', '3 серии', '5 серии', '7 серии', 'X6', 'X4', 'X7', '1 серии', '2 серии', '4 серии'],
+            'Mercedes-Benz': ['E-класс', 'C-класс', 'S-класс', 'GLE', 'GLC', 'GLA', 'GLK', 'ML', 'GL', 'A-класс', 'B-класс', 'CLS'],
+            'Audi': ['Q5', 'Q7', 'A4', 'A6', 'Q3', 'A3', 'Q8', 'A5', 'A7', 'A8', 'Q2'],
+            'Volkswagen': ['Tiguan', 'Touareg', 'Passat', 'Polo', 'Jetta', 'Golf', 'Touran', 'Caddy', 'Multivan'],
+            'Hyundai': ['Solaris', 'Creta', 'Tucson', 'Santa Fe', 'Elantra', 'Sonata', 'i30', 'i40', 'ix35', 'Grand Starex'],
+            'Kia': ['Rio', 'Sportage', 'Sorento', 'Ceed', 'Optima', 'Soul', 'Picanto', 'Seltos', 'Mohave', 'Carnival'],
+            'Chevrolet': ['Cruze', 'Aveo', 'Lacetti', 'Captiva', 'Tahoe', 'Suburban', 'Camaro', 'Corvette', 'Silverado'],
+            'Ford': ['Focus', 'Mondeo', 'Kuga', 'Explorer', 'EcoSport', 'Fiesta', 'Fusion', 'Escape', 'Edge', 'Expedition'],
+            'Lexus': ['RX', 'NX', 'LX', 'IS', 'ES', 'GX', 'LS', 'CT', 'GS', 'UX']
+          };
+
+          const brands = Object.keys(carDatabase).sort();
+          const models = filters.brand ? carDatabase[filters.brand] : [];
+
+          const bodyTypes = ['Седан', 'Хэтчбек', 'Универсал', 'Внедорожник', 'Кроссовер', 'Купе', 'Минивэн', 'Пикап', 'Лифтбек', 'Фургон'];
+          const transmissions = ['Механика', 'Автомат', 'Робот', 'Вариатор'];
+          const driveTypes = ['Передний', 'Задний', 'Полный'];
+          const fuelTypes = ['Бензин', 'Дизель', 'Гибрид', 'Электро', 'Газ', 'Газ-бензин'];
+          const colors = ['Белый', 'Черный', 'Серый', 'Серебристый', 'Красный', 'Синий', 'Зеленый', 'Коричневый', 'Желтый', 'Оранжевый', 'Бежевый', 'Золотистый'];
+          const regions = ['Москва', 'Санкт-Петербург', 'Владивосток', 'Новосибирск', 'Екатеринбург', 'Казань', 'Нижний Новгород', 'Челябинск', 'Самара', 'Омск', 'Ростов-на-Дону', 'Уфа', 'Красноярск', 'Пермь', 'Воронеж', 'Волгоград'];
+
+          // Популярные диапазоны цен
+          const priceRanges = [
+            { label: 'До 300 тыс', from: '', to: '300000' },
+            { label: '300-500 тыс', from: '300000', to: '500000' },
+            { label: '500-700 тыс', from: '500000', to: '700000' },
+            { label: '700 тыс - 1 млн', from: '700000', to: '1000000' },
+            { label: '1-1.5 млн', from: '1000000', to: '1500000' },
+            { label: '1.5-2 млн', from: '1500000', to: '2000000' },
+            { label: 'От 2 млн', from: '2000000', to: '' }
+          ];
+
+          // Популярные годы выпуска
+          const yearRanges = [
+            { label: 'С 2020', from: '2020', to: '' },
+            { label: '2015-2020', from: '2015', to: '2020' },
+            { label: '2010-2015', from: '2010', to: '2015' },
+            { label: '2005-2010', from: '2005', to: '2010' },
+            { label: 'До 2005', from: '', to: '2005' }
+          ];
+
+          const handleChange = (field, value) => {
+            setFilters(prev => ({ 
+              ...prev, 
+              [field]: value,
+              ...(field === 'brand' && { model: '' }) // Сброс модели при смене марки
+            }));
+          };
+
+          const handleMultiSelect = (field, value) => {
+            setFilters(prev => {
+              const current = prev[field];
+              const updated = current.includes(value)
+                ? current.filter(item => item !== value)
+                : [...current, value];
+              return { ...prev, [field]: updated };
+            });
+          };
+
+          const setPriceRange = (from, to) => {
+            setFilters(prev => ({ ...prev, priceFrom: from, priceTo: to }));
+          };
+
+          const setYearRange = (from, to) => {
+            setFilters(prev => ({ ...prev, yearFrom: from, yearTo: to }));
+          };
+
+          const handleSearch = () => {
+            const activeFilters = Object.entries(filters)
+              .filter(([_, value]) => value && (Array.isArray(value) ? value.length > 0 : true))
+              .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+              .join('\n');
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+              window.Telegram.WebApp.showAlert('Поиск запущен! Найдено объявлений: ' + Math.floor(Math.random() * 500));
+            } else {
+              alert(`Поиск запущен!\n\nПримененные фильтры:\n${activeFilters || 'Нет активных фильтров'}`);
             }
-            active:scale-95
-          `}
-        >
-          {label}
-        </button>
-      );
-      
-      // Главный компонент
-      function DromFilterApp() {
-        const [filters, setFilters] = useState({
-          brand: '',
-          model: '',
-          yearFrom: '',
-          yearTo: '',
-          priceFrom: '',
-          priceTo: '',
-          region: '',
-          bodyType: [],
-          transmission: [],
-          driveType: [],
-          fuelType: [],
-          color: [],
-          engineVolFrom: '',
-          engineVolTo: '',
-          mileageFrom: '',
-          mileageTo: '',
-          condition: '',
-          sellerType: '',
-          wheelPosition: '',
-          owners: ''
-        });
-        
-        // Обработка изменения обычных полей
-        const handleChange = (field, value) => {
-          setFilters(prev => ({ 
-            ...prev, 
-            [field]: value,
-            // При смене марки сбрасываем модель
-            ...(field === 'brand' && { model: '' })
-          }));
-        };
-        
-        // Обработка множественного выбора
-        const handleMultiSelect = (field, value) => {
-          setFilters(prev => {
-            const current = prev[field];
-            const updated = current.includes(value)
-              ? current.filter(item => item !== value)
-              : [...current, value];
-            return { ...prev, [field]: updated };
-          });
-        };
-        
-        // Быстрая установка диапазона цены
-        const setPriceRange = (from, to) => {
-          setFilters(prev => ({ 
-            ...prev, 
-            priceFrom: from, 
-            priceTo: to 
-          }));
-        };
-        
-        // Быстрая установка диапазона года
-        const setYearRange = (from, to) => {
-          setFilters(prev => ({ 
-            ...prev, 
-            yearFrom: from, 
-            yearTo: to 
-          }));
-        };
-        
-        // Поиск
-        const handleSearch = () => {
-          const activeFilters = Object.entries(filters)
-            .filter(([_, value]) => 
-              value && (Array.isArray(value) ? value.length > 0 : true)
-            )
-            .reduce((acc, [key, value]) => ({
-              ...acc,
-              [key]: value
-            }), {});
-          
-          if (window.Telegram?.WebApp) {
-            window.Telegram.WebApp.showAlert(
-              `Найдено объявлений: ${Math.floor(Math.random() * 500)}`
-            );
-            window.Telegram.WebApp.sendData(JSON.stringify(activeFilters));
-          } else {
-            console.log('Активные фильтры:', activeFilters);
-            alert(`Поиск запущен с ${Object.keys(activeFilters).length} фильтрами`);
-          }
-        };
-        
-        // Сброс всех фильтров
-        const resetFilters = () => {
-          setFilters({
-            brand: '', model: '', yearFrom: '', yearTo: '',
-            priceFrom: '', priceTo: '', region: '',
-            bodyType: [], transmission: [], driveType: [],
-            fuelType: [], color: [], engineVolFrom: '',
-            engineVolTo: '', mileageFrom: '', mileageTo: '',
-            condition: '', sellerType: '', wheelPosition: '', owners: ''
-          });
-        };
-        
-        // Получение моделей для выбранной марки
-        const availableModels = filters.brand ? carDatabase[filters.brand] || [] : [];
-        
-        return (
-          <div className="min-h-screen gradient-bg">
-            {/* ХЕДЕР */}
-            <header className="sticky top-0 z-50 gradient-blue-indigo text-white shadow-lg">
-              <div className="px-4 py-4 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Car className="w-6 h-6" />
-                  <h1 className="text-xl font-bold">Дром</h1>
-                </div>
-                <div className="bg-white bg-opacity-20 px-3 py-1 rounded-full">
-                  <span className="text-sm font-medium">700,000+ авто</span>
+          };
+
+          const resetFilters = () => {
+            setFilters({
+              brand: '',
+              model: '',
+              yearFrom: '',
+              yearTo: '',
+              priceFrom: '',
+              priceTo: '',
+              region: '',
+              bodyType: [],
+              engineVolFrom: '',
+              engineVolTo: '',
+              transmission: [],
+              driveType: [],
+              fuelType: [],
+              condition: '',
+              sellerType: '',
+              color: [],
+              mileageFrom: '',
+              mileageTo: '',
+              wheelPosition: '',
+              owners: '',
+              customs: ''
+            });
+          };
+
+          const MultiSelectButton = ({ label, selected, onClick }) => (
+            <button
+              onClick={onClick}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                selected
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {label}
+            </button>
+          );
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pb-24">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 shadow-lg sticky top-0 z-50">
+                <div className="flex items-center justify-between max-w-6xl mx-auto">
+                  <div className="flex items-center gap-2">
+                    <Car className="w-8 h-8" />
+                    <h1 className="text-2xl font-bold">Дром</h1>
+                  </div>
+                  <div className="text-sm bg-white/20 px-3 py-1 rounded-full">700,000+ авто</div>
                 </div>
               </div>
-            </header>
-            
-            {/* ОСНОВНОЙ КОНТЕНТ */}
-            <main className="pb-24 px-4 py-6 space-y-6">
-              
-              {/* Блок 1: МАРКА И МОДЕЛЬ */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Search className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-800">Марка и модель</h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Марка</label>
-                    <select
-                      value={filters.brand}
-                      onChange={(e) => handleChange('brand', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Все марки</option>
-                      {brands.map(brand => (
-                        <option key={brand} value={brand}>{brand}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Модель</label>
-                    <select
-                      value={filters.model}
-                      onChange={(e) => handleChange('model', e.target.value)}
-                      disabled={!filters.brand}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    >
-                      <option value="">Все модели</option>
-                      {availableModels.map(model => (
-                        <option key={model} value={model}>{model}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Блок 2: ГОД ВЫПУСКА */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Calendar className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-800">Год выпуска</h2>
-                </div>
-                
-                {/* Быстрые кнопки */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {[
-                    { label: 'С 2020', from: '2020', to: '' },
-                    { label: '2015-2020', from: '2015', to: '2020' },
-                    { label: '2010-2015', from: '2010', to: '2015' },
-                    { label: '2005-2010', from: '2005', to: '2010' },
-                    { label: 'До 2005', from: '', to: '2005' }
-                  ].map(({ label, from, to }) => (
-                    <button
-                      key={label}
-                      onClick={() => setYearRange(from, to)}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                
-                {/* Точный выбор */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">От</label>
-                    <select
-                      value={filters.yearFrom}
-                      onChange={(e) => handleChange('yearFrom', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Любой</option>
-                      {years.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">До</label>
-                    <select
-                      value={filters.yearTo}
-                      onChange={(e) => handleChange('yearTo', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Любой</option>
-                      {years.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Блок 3: ЦЕНА */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <DollarSign className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-800">Цена, ₽</h2>
-                </div>
-                
-                {/* Быстрые кнопки */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {[
-                    { label: 'До 300 тыс', from: '', to: '300000' },
-                    { label: '300-500 тыс', from: '300000', to: '500000' },
-                    { label: '500-700 тыс', from: '500000', to: '700000' },
-                    { label: '700 тыс - 1 млн', from: '700000', to: '1000000' },
-                    { label: '1-1.5 млн', from: '1000000', to: '1500000' },
-                    { label: '1.5-2 млн', from: '1500000', to: '2000000' },
-                    { label: 'От 2 млн', from: '2000000', to: '' }
-                  ].map(({ label, from, to }) => (
-                    <button
-                      key={label}
-                      onClick={() => setPriceRange(from, to)}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                
-                {/* Ручной ввод */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">От</label>
-                    <input
-                      type="number"
-                      value={filters.priceFrom}
-                      onChange={(e) => handleChange('priceFrom', e.target.value)}
-                      placeholder="100000"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">До</label>
-                    <input
-                      type="number"
-                      value={filters.priceTo}
-                      onChange={(e) => handleChange('priceTo', e.target.value)}
-                      placeholder="5000000"
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              {/* Блок 4: РЕГИОН */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  <MapPin className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-800">Регион</h2>
-                </div>
-                <select
-                  value={filters.region}
-                  onChange={(e) => handleChange('region', e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  {regions.map(region => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Блок 5: ТИП КУЗОВА */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">Тип кузова</h2>
-                <div className="flex flex-wrap gap-2">
-                  {bodyTypes.map(type => (
-                    <MultiSelectButton
-                      key={type}
-                      label={type}
-                      selected={filters.bodyType.includes(type)}
-                      onClick={() => handleMultiSelect('bodyType', type)}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              {/* Блок 6: ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <div className="flex items-center space-x-2 mb-6">
-                  <Settings className="w-5 h-5 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-800">Технические характеристики</h2>
-                </div>
-                
-                {/* Коробка передач */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Коробка передач</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {transmissions.map(type => (
-                      <MultiSelectButton
-                        key={type}
-                        label={type}
-                        selected={filters.transmission.includes(type)}
-                        onClick={() => handleMultiSelect('transmission', type)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Объём двигателя */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Объём двигателя, л</h3>
+
+              <div className="max-w-6xl mx-auto p-4">
+                {/* Основные параметры */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <Search className="w-5 h-5" />
+                    Марка и модель
+                  </h2>
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">От</label>
-                      <select
-                        value={filters.engineVolFrom}
-                        onChange={(e) => handleChange('engineVolFrom', e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Марка</label>
+                      <select 
+                        value={filters.brand}
+                        onChange={(e) => handleChange('brand', e.target.value)}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition appearance-none bg-white"
                       >
-                        <option value="">Любой</option>
-                        {engineVolumes.map(vol => (
-                          <option key={vol} value={vol}>{vol}</option>
+                        <option value="">Все марки</option>
+                        {brands.map(brand => (
+                          <option key={brand} value={brand}>{brand}</option>
                         ))}
                       </select>
                     </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">До</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Модель</label>
                       <select
-                        value={filters.engineVolTo}
-                        onChange={(e) => handleChange('engineVolTo', e.target.value)}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        value={filters.model}
+                        onChange={(e) => handleChange('model', e.target.value)}
+                        disabled={!filters.brand}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition appearance-none bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
                       >
-                        <option value="">Любой</option>
-                        {engineVolumes.map(vol => (
-                          <option key={vol} value={vol}>{vol}</option>
+                        <option value="">Все модели</option>
+                        {models.map(model => (
+                          <option key={model} value={model}>{model}</option>
                         ))}
                       </select>
                     </div>
                   </div>
                 </div>
-                
-                {/* Привод */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Привод</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {driveTypes.map(type => (
-                      <MultiSelectButton
-                        key={type}
-                        label={type}
-                        selected={filters.driveType.includes(type)}
-                        onClick={() => handleMultiSelect('driveType', type)}
-                      />
+
+                {/* Год выпуска */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Год выпуска
+                  </h2>
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {yearRanges.map(range => (
+                      <button
+                        key={range.label}
+                        onClick={() => setYearRange(range.from, range.to)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-blue-100 text-gray-700 rounded-lg text-sm font-medium transition"
+                      >
+                        {range.label}
+                      </button>
                     ))}
                   </div>
-                </div>
-                
-                {/* Тип топлива */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">⛽ Тип топлива</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {fuelTypes.map(type => (
-                      <MultiSelectButton
-                        key={type}
-                        label={type}
-                        selected={filters.fuelType.includes(type)}
-                        onClick={() => handleMultiSelect('fuelType', type)}
-                      />
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Пробег */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Пробег, тыс. км</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">От</label>
-                      <input
-                        type="number"
-                        value={filters.mileageFrom}
-                        onChange={(e) => handleChange('mileageFrom', e.target.value)}
-                        placeholder="0"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">От</label>
+                      <select
+                        value={filters.yearFrom}
+                        onChange={(e) => handleChange('yearFrom', e.target.value)}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                      >
+                        <option value="">Любой</option>
+                        {Array.from({length: 35}, (_, i) => 2025 - i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">До</label>
-                      <input
-                        type="number"
-                        value={filters.mileageTo}
-                        onChange={(e) => handleChange('mileageTo', e.target.value)}
-                        placeholder="500"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">До</label>
+                      <select
+                        value={filters.yearTo}
+                        onChange={(e) => handleChange('yearTo', e.target.value)}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                      >
+                        <option value="">Любой</option>
+                        {Array.from({length: 35}, (_, i) => 2025 - i).map(year => (
+                          <option key={year} value={year}>{year}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
-                
-                {/* Цвет */}
-                <div className="mb-6">
-                  <h3 className="text-md font-medium text-gray-700 mb-3">Цвет</h3>
+
+                {/* Цена */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Цена, ₽
+                  </h2>
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {priceRanges.map(range => (
+                      <button
+                        key={range.label}
+                        onClick={() => setPriceRange(range.from, range.to)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-blue-100 text-gray-700 rounded-lg text-sm font-medium transition"
+                      >
+                        {range.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">От</label>
+                      <input
+                        type="number"
+                        placeholder="100000"
+                        value={filters.priceFrom}
+                        onChange={(e) => handleChange('priceFrom', e.target.value)}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">До</label>
+                      <input
+                        type="number"
+                        placeholder="5000000"
+                        value={filters.priceTo}
+                        onChange={(e) => handleChange('priceTo', e.target.value)}
+                        className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Регион */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <MapPin className="w-5 h-5" />
+                    Регион
+                  </h2>
+                  <select 
+                    value={filters.region}
+                    onChange={(e) => handleChange('region', e.target.value)}
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                  >
+                    <option value="">Все регионы</option>
+                    {regions.map(region => (
+                      <option key={region} value={region}>{region}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Тип кузова */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Тип кузова</h2>
                   <div className="flex flex-wrap gap-2">
-                    {colors.map(color => (
+                    {bodyTypes.map(type => (
                       <MultiSelectButton
-                        key={color}
-                        label={color}
-                        selected={filters.color.includes(color)}
-                        onClick={() => handleMultiSelect('color', color)}
+                        key={type}
+                        label={type}
+                        selected={filters.bodyType.includes(type)}
+                        onClick={() => handleMultiSelect('bodyType', type)}
                       />
                     ))}
                   </div>
                 </div>
-                
-                {/* Дополнительные фильтры */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Состояние</label>
-                    <select
-                      value={filters.condition}
-                      onChange={(e) => handleChange('condition', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      {conditions.map(condition => (
-                        <option key={condition} value={condition}>{condition}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Продавец</label>
-                    <select
-                      value={filters.sellerType}
-                      onChange={(e) => handleChange('sellerType', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      {sellerTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Руль</label>
-                    <select
-                      value={filters.wheelPosition}
-                      onChange={(e) => handleChange('wheelPosition', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      {wheelPositions.map(position => (
-                        <option key={position} value={position}>{position}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Владельцев</label>
-                    <select
-                      value={filters.owners}
-                      onChange={(e) => handleChange('owners', e.target.value)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      {owners.map(owner => (
-                        <option key={owner} value={owner}>{owner}</option>
-                      ))}
-                    </select>
+
+                {/* Дополнительные параметры */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <Settings className="w-5 h-5" />
+                    Технические характеристики
+                  </h2>
+
+                  <div className="space-y-6">
+                    {/* Коробка передач */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Коробка передач</label>
+                      <div className="flex flex-wrap gap-2">
+                        {transmissions.map(trans => (
+                          <MultiSelectButton
+                            key={trans}
+                            label={trans}
+                            selected={filters.transmission.includes(trans)}
+                            onClick={() => handleMultiSelect('transmission', trans)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Объём двигателя */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Объём двигателя, л</label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <select
+                          value={filters.engineVolFrom}
+                          onChange={(e) => handleChange('engineVolFrom', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">От</option>
+                          <option value="0.8">0.8</option>
+                          <option value="1.0">1.0</option>
+                          <option value="1.2">1.2</option>
+                          <option value="1.4">1.4</option>
+                          <option value="1.5">1.5</option>
+                          <option value="1.6">1.6</option>
+                          <option value="1.8">1.8</option>
+                          <option value="2.0">2.0</option>
+                          <option value="2.5">2.5</option>
+                          <option value="3.0">3.0</option>
+                          <option value="3.5">3.5</option>
+                          <option value="4.0">4.0</option>
+                        </select>
+                        <select
+                          value={filters.engineVolTo}
+                          onChange={(e) => handleChange('engineVolTo', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">До</option>
+                          <option value="1.0">1.0</option>
+                          <option value="1.2">1.2</option>
+                          <option value="1.4">1.4</option>
+                          <option value="1.6">1.6</option>
+                          <option value="1.8">1.8</option>
+                          <option value="2.0">2.0</option>
+                          <option value="2.5">2.5</option>
+                          <option value="3.0">3.0</option>
+                          <option value="3.5">3.5</option>
+                          <option value="4.0">4.0</option>
+                          <option value="5.0">5.0</option>
+                          <option value="6.0">6.0</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Привод */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Привод</label>
+                      <div className="flex flex-wrap gap-2">
+                        {driveTypes.map(drive => (
+                          <MultiSelectButton
+                            key={drive}
+                            label={drive}
+                            selected={filters.driveType.includes(drive)}
+                            onClick={() => handleMultiSelect('driveType', drive)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Тип топлива */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1">
+                        <Fuel className="w-4 h-4" />
+                        Тип топлива
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {fuelTypes.map(fuel => (
+                          <MultiSelectButton
+                            key={fuel}
+                            label={fuel}
+                            selected={filters.fuelType.includes(fuel)}
+                            onClick={() => handleMultiSelect('fuelType', fuel)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Пробег */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Пробег, тыс. км</label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <input
+                          type="number"
+                          placeholder="От"
+                          value={filters.mileageFrom}
+                          onChange={(e) => handleChange('mileageFrom', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        />
+                        <input
+                          type="number"
+                          placeholder="До"
+                          value={filters.mileageTo}
+                          onChange={(e) => handleChange('mileageTo', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Цвет */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Цвет</label>
+                      <div className="flex flex-wrap gap-2">
+                        {colors.map(color => (
+                          <MultiSelectButton
+                            key={color}
+                            label={color}
+                            selected={filters.color.includes(color)}
+                            onClick={() => handleMultiSelect('color', color)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Дополнительные селекты */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Состояние</label>
+                        <select 
+                          value={filters.condition}
+                          onChange={(e) => handleChange('condition', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">Любое</option>
+                          <option value="Новый">Новый</option>
+                          <option value="С пробегом">С пробегом</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Продавец</label>
+                        <select 
+                          value={filters.sellerType}
+                          onChange={(e) => handleChange('sellerType', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">Все</option>
+                          <option value="Частное лицо">Частное лицо</option>
+                          <option value="Автосалон">Автосалон</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Руль</label>
+                        <select 
+                          value={filters.wheelPosition}
+                          onChange={(e) => handleChange('wheelPosition', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">Любой</option>
+                          <option value="Левый">Левый</option>
+                          <option value="Правый">Правый</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Владельцев по ПТС</label>
+                        <select 
+                          value={filters.owners}
+                          onChange={(e) => handleChange('owners', e.target.value)}
+                          className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition"
+                        >
+                          <option value="">Не важно</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3 и более">3 и более</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Блок 7: ИНФОРМАЦИОННЫЙ БАННЕР */}
-              <div className="gradient-green border border-green-200 rounded-xl p-6 text-center">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                  <span className="text-lg font-bold text-green-800">Более 700,000 объявлений</span>
+
+                {/* Info Banner */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-4 border-2 border-green-200">
+                  <p className="text-green-800 text-center">
+                    <span className="font-bold">Более 700,000 объявлений</span> от частных лиц и автосалонов
+                  </p>
                 </div>
-                <p className="text-green-700">от частных лиц и автосалонов</p>
               </div>
-              
-            </main>
-            
-            {/* НИЖНЯЯ ПАНЕЛЬ */}
-            <footer className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4">
-              <div className="flex gap-3">
-                <button
-                  onClick={resetFilters}
-                  className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Сбросить
-                </button>
-                <button
-                  onClick={handleSearch}
-                  className="flex-1 gradient-blue-indigo text-white py-3 px-4 rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center space-x-2"
-                >
-                  <Search className="w-5 h-5" />
-                  <span>Показать объявления</span>
-                </button>
+
+              {/* Fixed Bottom Buttons */}
+              <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 p-4 shadow-2xl z-40">
+                <div className="max-w-6xl mx-auto flex gap-3">
+                  <button
+                    onClick={resetFilters}
+                    className="flex-1 py-4 px-6 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-all active:scale-95"
+                  >
+                    Сбросить
+                  </button>
+                  <button
+                    onClick={handleSearch}
+                    className="flex-1 py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    <Search className="w-5 h-5" />
+                    Показать объявления
+                  </button>
+                </div>
               </div>
-            </footer>
-            
-          </div>
-        );
-      }
-      
-      // Скрываем загрузочный экран и рендерим приложение
-      function initApp() {
-        try {
-          const root = ReactDOM.createRoot(document.getElementById('root'));
-          root.render(<DromFilterApp />);
-          
-          // Скрываем загрузочный экран
-          document.getElementById('loading').style.display = 'none';
-          
-          // Инициализация Telegram WebApp
-          if (window.Telegram?.WebApp) {
-            const tg = window.Telegram.WebApp;
-            
-            // Инициализация
-            tg.ready();
-            
-            // Раскрытие на весь экран
-            tg.expand();
-            
-            // Установка цвета фона
-            tg.setBackgroundColor('#eff6ff');
-            
-            // Установка цвета хедера
-            tg.setHeaderColor('#2563eb');
-            
-            console.log('Telegram WebApp инициализирован');
-          } else {
-            console.log('Telegram WebApp не найден, работаем в браузере');
-          }
-        } catch (error) {
-          console.error('Ошибка инициализации:', error);
-          showError('Ошибка загрузки приложения: ' + error.message);
+            </div>
+          );
         }
-      }
-      
-      // Запускаем приложение после загрузки всех библиотек
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initApp);
-      } else {
-        initApp();
-      }
-      
-    } catch (error) {
-      console.error('Критическая ошибка:', error);
-      showError('Критическая ошибка: ' + error.message);
-    }
-  </script>
+
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<DromFilterApp />);
+        
+        if (window.Telegram && window.Telegram.WebApp) {
+          const tg = window.Telegram.WebApp;
+          tg.ready();
+          tg.expand();
+        }
+    </script>
 </body>
 </html>
