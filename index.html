@@ -15,91 +15,123 @@
     <!-- Babel для JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
         }
         
-        .gradient-header {
+        .header {
             background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .gradient-button {
-            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            padding-bottom: 100px;
         }
         
         .card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .button-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
+        .card h2 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            color: #374151;
+            margin-bottom: 8px;
         }
         
-        .button-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
         }
         
-        .button-secondary {
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .form-group select:disabled {
+            background: #f3f4f6;
+            opacity: 0.6;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .quick-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
             background: #f3f4f6;
             color: #374151;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.2s;
         }
         
-        .button-secondary:hover {
-            background: #e5e7eb;
+        .quick-btn:hover {
+            background: #dbeafe;
         }
         
-        .select-style {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            background: white;
-            font-size: 16px;
+        .multi-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         
-        .select-style:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-        
-        .input-style {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            background: white;
-            font-size: 16px;
-        }
-        
-        .input-style:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-        
-        .multi-select-button {
+        .multi-btn {
             padding: 8px 16px;
             border: none;
             border-radius: 6px;
@@ -107,38 +139,79 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            margin: 4px;
         }
         
-        .multi-select-button.selected {
+        .multi-btn.selected {
             background: #2563eb;
             color: white;
         }
         
-        .multi-select-button:not(.selected) {
+        .multi-btn:not(.selected) {
             background: #f3f4f6;
             color: #374151;
         }
         
-        .multi-select-button:not(.selected):hover {
+        .multi-btn:not(.selected):hover {
             background: #e5e7eb;
         }
         
-        .quick-button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            background: #f3f4f6;
-            color: #374151;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 4px;
+        .bottom-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 2px solid #e5e7eb;
+            padding: 16px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
         }
         
-        .quick-button:hover {
-            background: #dbeafe;
+        .btn-reset {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            background: #f3f4f6;
+            color: #374151;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-search {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-reset:hover {
+            background: #e5e7eb;
+        }
+        
+        .btn-search:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .info-banner {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            color: #166534;
+        }
+        
+        .info-banner strong {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -268,34 +341,23 @@
             };
             
             return (
-                <div style={{ minHeight: '100vh', paddingBottom: '100px' }}>
+                <div>
                     {/* Header */}
-                    <div className="gradient-header text-white p-4 shadow-lg" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: '1200px', margin: '0 auto' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ fontSize: '24px' }}>🚗</div>
-                                <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Дром</h1>
-                            </div>
-                            <div style={{ fontSize: '14px', background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px' }}>
-                                700,000+ авто
-                            </div>
-                        </div>
+                    <div className="header">
+                        <h1>🚗 Дром - Поиск автомобилей</h1>
+                        <p>700,000+ объявлений</p>
                     </div>
                     
-                    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
+                    <div className="container">
                         {/* Марка и модель */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                🔍 Марка и модель
-                            </h2>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Марка</label>
+                        <div className="card">
+                            <h2>🔍 Марка и модель</h2>
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label>Марка</label>
                                     <select 
                                         value={filters.brand}
                                         onChange={(e) => handleChange('brand', e.target.value)}
-                                        className="select-style"
                                     >
                                         <option value="">Все марки</option>
                                         {brands.map(brand => (
@@ -303,15 +365,12 @@
                                         ))}
                                     </select>
                                 </div>
-                                
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Модель</label>
+                                <div className="form-group">
+                                    <label>Модель</label>
                                     <select
                                         value={filters.model}
                                         onChange={(e) => handleChange('model', e.target.value)}
                                         disabled={!filters.brand}
-                                        className="select-style"
-                                        style={{ opacity: !filters.brand ? 0.5 : 1 }}
                                     >
                                         <option value="">Все модели</option>
                                         {models.map(model => (
@@ -323,30 +382,25 @@
                         </div>
                         
                         {/* Год выпуска */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                📅 Год выпуска
-                            </h2>
-                            
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+                        <div className="card">
+                            <h2>📅 Год выпуска</h2>
+                            <div className="quick-buttons">
                                 {yearRanges.map(range => (
                                     <button
                                         key={range.label}
                                         onClick={() => setYearRange(range.from, range.to)}
-                                        className="quick-button"
+                                        className="quick-btn"
                                     >
                                         {range.label}
                                     </button>
                                 ))}
                             </div>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>От</label>
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label>От</label>
                                     <select
                                         value={filters.yearFrom}
                                         onChange={(e) => handleChange('yearFrom', e.target.value)}
-                                        className="select-style"
                                     >
                                         <option value="">Любой</option>
                                         {Array.from({length: 35}, (_, i) => 2025 - i).map(year => (
@@ -354,12 +408,11 @@
                                         ))}
                                     </select>
                                 </div>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>До</label>
+                                <div className="form-group">
+                                    <label>До</label>
                                     <select
                                         value={filters.yearTo}
                                         onChange={(e) => handleChange('yearTo', e.target.value)}
-                                        className="select-style"
                                     >
                                         <option value="">Любой</option>
                                         {Array.from({length: 35}, (_, i) => 2025 - i).map(year => (
@@ -371,73 +424,66 @@
                         </div>
                         
                         {/* Цена */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                💰 Цена, ₽
-                            </h2>
-                            
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+                        <div className="card">
+                            <h2>💰 Цена, ₽</h2>
+                            <div className="quick-buttons">
                                 {priceRanges.map(range => (
                                     <button
                                         key={range.label}
                                         onClick={() => setPriceRange(range.from, range.to)}
-                                        className="quick-button"
+                                        className="quick-btn"
                                     >
                                         {range.label}
                                     </button>
                                 ))}
                             </div>
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>От</label>
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label>От</label>
                                     <input
                                         type="number"
                                         placeholder="100000"
                                         value={filters.priceFrom}
                                         onChange={(e) => handleChange('priceFrom', e.target.value)}
-                                        className="input-style"
                                     />
                                 </div>
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>До</label>
+                                <div className="form-group">
+                                    <label>До</label>
                                     <input
                                         type="number"
                                         placeholder="5000000"
                                         value={filters.priceTo}
                                         onChange={(e) => handleChange('priceTo', e.target.value)}
-                                        className="input-style"
                                     />
                                 </div>
                             </div>
                         </div>
                         
                         {/* Регион */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                📍 Регион
-                            </h2>
-                            <select 
-                                value={filters.region}
-                                onChange={(e) => handleChange('region', e.target.value)}
-                                className="select-style"
-                            >
-                                <option value="">Все регионы</option>
-                                {regions.map(region => (
-                                    <option key={region} value={region}>{region}</option>
-                                ))}
-                            </select>
+                        <div className="card">
+                            <h2>📍 Регион</h2>
+                            <div className="form-group">
+                                <select 
+                                    value={filters.region}
+                                    onChange={(e) => handleChange('region', e.target.value)}
+                                >
+                                    <option value="">Все регионы</option>
+                                    {regions.map(region => (
+                                        <option key={region} value={region}>{region}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                         
                         {/* Тип кузова */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px' }}>Тип кузова</h2>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        <div className="card">
+                            <h2>Тип кузова</h2>
+                            <div className="multi-buttons">
                                 {bodyTypes.map(type => (
                                     <button
                                         key={type}
                                         onClick={() => handleMultiSelect('bodyType', type)}
-                                        className={`multi-select-button ${filters.bodyType.includes(type) ? 'selected' : ''}`}
+                                        className={`multi-btn ${filters.bodyType.includes(type) ? 'selected' : ''}`}
                                     >
                                         {type}
                                     </button>
@@ -446,104 +492,84 @@
                         </div>
                         
                         {/* Технические характеристики */}
-                        <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
-                            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1f2937', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                ⚙️ Технические характеристики
-                            </h2>
+                        <div className="card">
+                            <h2>⚙️ Технические характеристики</h2>
                             
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                {/* Коробка передач */}
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Коробка передач</label>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                        {transmissions.map(trans => (
-                                            <button
-                                                key={trans}
-                                                onClick={() => handleMultiSelect('transmission', trans)}
-                                                className={`multi-select-button ${filters.transmission.includes(trans) ? 'selected' : ''}`}
-                                            >
-                                                {trans}
-                                            </button>
-                                        ))}
-                                    </div>
+                            <div className="form-group">
+                                <label>Коробка передач</label>
+                                <div className="multi-buttons">
+                                    {transmissions.map(trans => (
+                                        <button
+                                            key={trans}
+                                            onClick={() => handleMultiSelect('transmission', trans)}
+                                            className={`multi-btn ${filters.transmission.includes(trans) ? 'selected' : ''}`}
+                                        >
+                                            {trans}
+                                        </button>
+                                    ))}
                                 </div>
-                                
-                                {/* Привод */}
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Привод</label>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                        {driveTypes.map(drive => (
-                                            <button
-                                                key={drive}
-                                                onClick={() => handleMultiSelect('driveType', drive)}
-                                                className={`multi-select-button ${filters.driveType.includes(drive) ? 'selected' : ''}`}
-                                            >
-                                                {drive}
-                                            </button>
-                                        ))}
-                                    </div>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>Привод</label>
+                                <div className="multi-buttons">
+                                    {driveTypes.map(drive => (
+                                        <button
+                                            key={drive}
+                                            onClick={() => handleMultiSelect('driveType', drive)}
+                                            className={`multi-btn ${filters.driveType.includes(drive) ? 'selected' : ''}`}
+                                        >
+                                            {drive}
+                                        </button>
+                                    ))}
                                 </div>
-                                
-                                {/* Тип топлива */}
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>⛽ Тип топлива</label>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                        {fuelTypes.map(fuel => (
-                                            <button
-                                                key={fuel}
-                                                onClick={() => handleMultiSelect('fuelType', fuel)}
-                                                className={`multi-select-button ${filters.fuelType.includes(fuel) ? 'selected' : ''}`}
-                                            >
-                                                {fuel}
-                                            </button>
-                                        ))}
-                                    </div>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>⛽ Тип топлива</label>
+                                <div className="multi-buttons">
+                                    {fuelTypes.map(fuel => (
+                                        <button
+                                            key={fuel}
+                                            onClick={() => handleMultiSelect('fuelType', fuel)}
+                                            className={`multi-btn ${filters.fuelType.includes(fuel) ? 'selected' : ''}`}
+                                        >
+                                            {fuel}
+                                        </button>
+                                    ))}
                                 </div>
-                                
-                                {/* Цвет */}
-                                <div>
-                                    <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>Цвет</label>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                                        {colors.map(color => (
-                                            <button
-                                                key={color}
-                                                onClick={() => handleMultiSelect('color', color)}
-                                                className={`multi-select-button ${filters.color.includes(color) ? 'selected' : ''}`}
-                                            >
-                                                {color}
-                                            </button>
-                                        ))}
-                                    </div>
+                            </div>
+                            
+                            <div className="form-group">
+                                <label>Цвет</label>
+                                <div className="multi-buttons">
+                                    {colors.map(color => (
+                                        <button
+                                            key={color}
+                                            onClick={() => handleMultiSelect('color', color)}
+                                            className={`multi-btn ${filters.color.includes(color) ? 'selected' : ''}`}
+                                        >
+                                            {color}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </div>
                         
                         {/* Info Banner */}
-                        <div style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', borderRadius: '12px', padding: '16px', marginBottom: '16px', border: '2px solid #bbf7d0' }}>
-                            <p style={{ color: '#166534', textAlign: 'center', margin: 0 }}>
-                                <span style={{ fontWeight: 'bold' }}>Более 700,000 объявлений</span> от частных лиц и автосалонов
-                            </p>
+                        <div className="info-banner">
+                            <strong>Более 700,000 объявлений</strong> от частных лиц и автосалонов
                         </div>
                     </div>
                     
-                    {/* Fixed Bottom Buttons */}
-                    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'white', borderTop: '2px solid #e5e7eb', padding: '16px', boxShadow: '0 -4px 6px -1px rgba(0, 0, 0, 0.1)', zIndex: 40 }}>
-                        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '12px' }}>
-                            <button
-                                onClick={resetFilters}
-                                className="button-secondary"
-                                style={{ flex: 1 }}
-                            >
-                                Сбросить
-                            </button>
-                            <button
-                                onClick={handleSearch}
-                                className="button-primary"
-                                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-                            >
-                                🔍 Показать объявления
-                            </button>
-                        </div>
+                    {/* Bottom Buttons */}
+                    <div className="bottom-buttons">
+                        <button onClick={resetFilters} className="btn-reset">
+                            Сбросить
+                        </button>
+                        <button onClick={handleSearch} className="btn-search">
+                            🔍 Показать объявления
+                        </button>
                     </div>
                 </div>
             );
